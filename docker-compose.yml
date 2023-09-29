@@ -109,9 +109,13 @@ services:
   memcached:
     image: memcached
     container_name : memcached
+    restart: always
     networks:
       gtnet:
          ipv4_address: 172.21.0.7
+    depends_on:
+      gtdb:
+        condition: service_healthy
 
 networks:
   gtnet:
