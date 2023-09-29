@@ -14,8 +14,7 @@ El código del resto de los contenedores se encuentra en:
 - https://github.com/mflo80/gtareas-api
 - https://github.com/mflo80/gtareas-frontend
 
-Es de mencionar que se cargan adjunto al presente, el archivo de configuración docker-compose.yml
-para que se puedan ejecutar los contenedores en docker de las herramientas antes mencionadas.
-
-También se añade la imagen aportada por el teacher de programación, la cual contiene el diagrama
-del proyecto y lo a realizar en el mismo.
+Es de mencionar que se cargan adjunto al presente, el archivo de configuración
+docker-compose.yml para que se puedan ejecutar los contenedores en docker de las
+herramientas antes mencionadas y la imagen aportada por el teacher de programación,
+la cual contiene el diagrama del proyecto y lo a realizar en el mismo.
