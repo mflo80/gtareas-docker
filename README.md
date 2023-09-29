@@ -1,4 +1,4 @@
-#Proyecto Gestor de Tareas 
+# Proyecto Gestor de Tareas
 
 ISBO - TA2 - Programación II
 
