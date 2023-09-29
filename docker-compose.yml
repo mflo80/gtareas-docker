@@ -105,6 +105,13 @@ services:
     depends_on:
       gtapi:
         condition: service_started
+        
+  memcached:
+    image: memcached
+    container_name : memcached
+    networks:
+      gtnet:
+         ipv4_address: 172.21.0.7
 
 networks:
   gtnet:
