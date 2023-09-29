@@ -2,11 +2,12 @@ version: '3'
 
 services:
   gtdb:
-    image: mysql:8.1.0
+    image: marftoru/mysql:8.1.0
     container_name : gtdb
     command: --default-authentication-plugin=mysql_native_password
     ports:
       - '3306:3306'
+    restart: always
     volumes:
       - './gtdb:/var/lib/mysql'
     environment:
@@ -19,11 +20,11 @@ services:
          ipv4_address: 172.21.0.2
 
   gtoauth:
-    image: bitnami/laravel:10.2.6
+    image: marftoru/laravel:10.25.2
     container_name : gtoauth
     ports:
       - '8003:8000'
-    restart: on-failure
+    restart: always
     environment:
       DB_HOST: gtdb
       DB_PORT: 3306
@@ -40,11 +41,11 @@ services:
         condition: service_healthy
 
   gtapi:
-    image: bitnami/laravel:10.2.6
+    image: marftoru/laravel:10.25.2
     container_name : gtapi
     ports:
       - '8002:8000'
-    restart: on-failure
+    restart: always
     environment:
       DB_HOST: gtdb
       DB_PORT: 3306
@@ -63,11 +64,11 @@ services:
         condition: service_started
 
   gtlogin:
-    image: bitnami/laravel:10.2.6
+    image: marftoru/laravel:10.25.2
     container_name : gtlogin
     ports:
       - '8001:8000'
-    restart: on-failure
+    restart: always
     environment:
       DB_HOST: gtdb
       DB_PORT: 3306
@@ -84,11 +85,11 @@ services:
         condition: service_started
 
   gtfrontend:
-    image: bitnami/laravel:10.2.6
+    image: marftoru/laravel:10.25.2
     container_name : gtfrontend
     ports:
       - '8000:8000'
-    restart: on-failure
+    restart: always
     environment:
       DB_HOST: gtdb
       DB_PORT: 3306
