@@ -4,7 +4,7 @@ ISBO - TA2 - Programación II
 
 El presente proyecto fue realizado utilizando las siguientes herramientas:
 - Docker / Compose
-- Laravel 10.2.6
+- Laravel 10.25.2
 - PHP 8.2.10
 - MySQL 8.1.0
 
