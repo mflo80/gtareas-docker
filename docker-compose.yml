@@ -2,9 +2,12 @@ version: '3'
 
 services:
   gtdb:
-    image: marftoru/mysql:8.1.0_utf8mb4
+    image: marftoru/mysql:8.1.0
     container_name : gtdb
-    command: --default-authentication-plugin=mysql_native_password
+    command: 
+      --default-authentication-plugin=mysql_native_password 
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
     ports:
       - '3306:3306'
     restart: always
@@ -14,6 +17,7 @@ services:
       MYSQL_ROOT_PASSWORD : gtareas
       MYSQL_DATABASE : gtareas
       TZ: America/Montevideo
+      LANG: C.UTF-8
     healthcheck:
       test: "exit 0"
     networks:
