@@ -1,0 +1,109 @@
+version: '3'
+
+services:
+  gtdb:
+    image: mysql:8.1.0
+    container_name : gtdb
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - '3306:3306'
+    volumes:
+      - './gtdb:/var/lib/mysql'
+    environment:
+      MYSQL_ROOT_PASSWORD : gtareas
+      MYSQL_DATABASE : gtareas
+    healthcheck:
+      test: "exit 0"
+    networks:
+      gtnet:
+         ipv4_address: 172.21.0.2
+
+  gtoauth:
+    image: bitnami/laravel:10.2.6
+    container_name : gtoauth
+    ports:
+      - '8003:8000'
+    restart: on-failure
+    environment:
+      DB_HOST: gtdb
+      DB_PORT: 3306
+      DB_USERNAME: root
+      DB_PASSWORD: gtareas
+      DB_DATABASE: gtareas
+    volumes:
+      - './gtoauth:/app'
+    networks:
+      gtnet:
+         ipv4_address: 172.21.0.3
+    depends_on:
+      gtdb:
+        condition: service_healthy
+
+  gtapi:
+    image: bitnami/laravel:10.2.6
+    container_name : gtapi
+    ports:
+      - '8002:8000'
+    restart: on-failure
+    environment:
+      DB_HOST: gtdb
+      DB_PORT: 3306
+      DB_USERNAME: root
+      DB_PASSWORD: gtareas
+      DB_DATABASE: gtareas
+    volumes:
+      - './gtapi:/app'
+    networks:
+      gtnet:
+         ipv4_address: 172.21.0.4
+    depends_on:
+      gtdb:
+        condition: service_healthy
+      gtoauth:
+        condition: service_started
+
+  gtlogin:
+    image: bitnami/laravel:10.2.6
+    container_name : gtlogin
+    ports:
+      - '8001:8000'
+    restart: on-failure
+    environment:
+      DB_HOST: gtdb
+      DB_PORT: 3306
+      DB_USERNAME: root
+      DB_PASSWORD: gtareas
+      DB_DATABASE: gtareas
+    volumes:
+      - './gtlogin:/app'
+    networks:
+      gtnet:
+         ipv4_address: 172.21.0.5
+    depends_on:
+      gtoauth:
+        condition: service_started
+
+  gtfrontend:
+    image: bitnami/laravel:10.2.6
+    container_name : gtfrontend
+    ports:
+      - '8000:8000'
+    restart: on-failure
+    environment:
+      DB_HOST: gtdb
+      DB_PORT: 3306
+      DB_USERNAME: root
+      DB_PASSWORD: gtareas
+      DB_DATABASE: gtareas
+    volumes:
+      - './gtfrontend:/app'
+    networks:
+      gtnet:
+         ipv4_address: 172.21.0.6
+    depends_on:
+      gtapi:
+        condition: service_started
+
+networks:
+  gtnet:
+    external: true
