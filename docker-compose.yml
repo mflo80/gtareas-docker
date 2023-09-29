@@ -2,7 +2,7 @@ version: '3'
 
 services:
   gtdb:
-    image: marftoru/mysql:8.1.0
+    image: marftoru/mysql:8.1.0_utf8mb4
     container_name : gtdb
     command: --default-authentication-plugin=mysql_native_password
     ports:
