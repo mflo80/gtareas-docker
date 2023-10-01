@@ -49,7 +49,7 @@ services:
       DB_USERNAME: root
       DB_PASSWORD: gtareas
       DB_DATABASE: gtareas
-      SERVER_GTOAUTH: 172.21.0.5:8000
+      SERVER_GTOAPI: 172.21.0.5:8000
     volumes:
       - './gtoauth:/app'
     networks:
@@ -87,33 +87,11 @@ services:
       gtoauth:
         condition: service_started
 
-  gtlogin:
-    image: marftoru/laravel:10.25.2
-    container_name : gtlogin
-    ports:
-      - '8001:8000'
-    restart: always
-    environment:
-      DB_HOST: gtdb
-      DB_PORT: 3306
-      DB_USERNAME: root
-      DB_PASSWORD: gtareas
-      DB_DATABASE: gtareas
-      SERVER_GTOAUTH: 172.21.0.4:8000
-    volumes:
-      - './gtlogin:/app'
-    networks:
-      gtnet:
-         ipv4_address: 172.21.0.6
-    depends_on:
-      gtoauth:
-        condition: service_started
-
   gtfrontend:
     image: marftoru/laravel:10.25.2
     container_name : gtfrontend
     ports:
-      - '8000:8000'
+      - '8001:8000'
     restart: always
     environment:
       DB_HOST: gtdb
@@ -126,9 +104,31 @@ services:
       - './gtfrontend:/app'
     networks:
       gtnet:
-         ipv4_address: 172.21.0.7
+         ipv4_address: 172.21.0.6
     depends_on:
       gtapi:
+        condition: service_started
+
+  gtlogin:
+    image: marftoru/laravel:10.25.2
+    container_name : gtlogin
+    ports:
+      - '8000:8000'
+    restart: always
+    environment:
+      DB_HOST: gtdb
+      DB_PORT: 3306
+      DB_USERNAME: root
+      DB_PASSWORD: gtareas
+      DB_DATABASE: gtareas
+      SERVER_GTOAUTH: 172.21.0.4:8000
+    volumes:
+      - './gtlogin:/app'
+    networks:
+      gtnet:
+         ipv4_address: 172.21.0.7
+    depends_on:
+      gtoauth:
         condition: service_started
         
 networks:
