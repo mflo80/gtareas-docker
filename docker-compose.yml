@@ -49,7 +49,8 @@ services:
       DB_USERNAME: root
       DB_PASSWORD: gtareas
       DB_DATABASE: gtareas
-      SERVER_GTOAPI: 172.21.0.5:8000
+      MEMCACHED_HOST: memcached
+      LINK_RESTABLECER_PASSWORD: http://192.168.0.2:8000/gtareas-password-
     volumes:
       - './gtoauth:/app'
     networks:
@@ -73,6 +74,7 @@ services:
       DB_USERNAME: root
       DB_PASSWORD: gtareas
       DB_DATABASE: gtareas
+      MEMCACHED_HOST: memcached
       SERVER_GTOAUTH: 172.21.0.4:8000
     volumes:
       - './gtapi:/app'
@@ -94,11 +96,7 @@ services:
       - '8001:8000'
     restart: always
     environment:
-      DB_HOST: gtdb
-      DB_PORT: 3306
-      DB_USERNAME: root
-      DB_PASSWORD: gtareas
-      DB_DATABASE: gtareas
+      MEMCACHED_HOST: memcached
       SERVER_GTAPI: 172.21.0.5:8000
     volumes:
       - './gtfrontend:/app'
@@ -116,12 +114,11 @@ services:
       - '8000:8000'
     restart: always
     environment:
-      DB_HOST: gtdb
-      DB_PORT: 3306
-      DB_USERNAME: root
-      DB_PASSWORD: gtareas
-      DB_DATABASE: gtareas
-      SERVER_GTOAUTH: 172.21.0.4:8000
+      MEMCACHED_HOST: memcached
+      GTOAUTH_LOGIN: 172.21.0.4:8000/api/auth/login
+      GTOAUTH_LOGOUT: 172.21.0.4:8000/api/auth/logout
+      GTOAUTH_USUARIOS: 172.21.0.4:8000/api/usuarios
+      GTOAUTH_PASSWORD: 172.21.0.4:8000/api/password
     volumes:
       - './gtlogin:/app'
     networks:
