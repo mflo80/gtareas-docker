@@ -50,7 +50,8 @@ services:
       DB_PASSWORD: gtareas
       DB_DATABASE: gtareas
       MEMCACHED_HOST: memcached
-      LINK_RESTABLECER_PASSWORD: http://192.168.0.2:8000/gtareas-password-
+      # Se debe cambiar los párametros de esta variable por la IP y Puerto del servidor al cual ingresarán los Clientes a la Web de Gestor de Tareas.
+      IPSERVER_RESTABLECER_PASSWORD: http://192.168.0.2:8000
     volumes:
       - './gtoauth:/app'
     networks:
