@@ -10,7 +10,7 @@ services:
       --collation-server=utf8mb4_unicode_ci
     ports:
       - '3306:3306'
-    restart: always
+    restart: unless-stopped
     volumes:
       - './gtdb:/var/lib/mysql'
     environment:
@@ -18,31 +18,29 @@ services:
       MYSQL_DATABASE : gtareas
       TZ: America/Montevideo
       LANG: C.UTF-8
-    healthcheck:
-      test: "exit 0"
+#    healthcheck:
+#      test: "exit 0"
     networks:
-      gtnet:
-         ipv4_address: 172.21.0.2
+      - gtnet
          
   memcached:
     image: memcached
     container_name : memcached
-    restart: always
-    healthcheck:
-      test: "exit 0"
+    restart: unless-stopped
+#    healthcheck:
+#      test: "exit 0"
     networks:
       gtnet:
-         ipv4_address: 172.21.0.3
     depends_on:
-      gtdb:
-        condition: service_healthy
+      - gtdb
+#      condition: service_healthy
 
   gtoauth:
     image: marftoru/laravel:10.25.2
     container_name : gtoauth
     ports:
       - '8003:8000'
-    restart: always
+    restart: unless-stopped
     environment:
       DB_HOST: gtdb
       DB_PORT: 3306
@@ -51,24 +49,24 @@ services:
       DB_DATABASE: gtareas
       MEMCACHED_HOST: memcached
       # Se debe cambiar los párametros de esta variable por la IP y Puerto del servidor al cual ingresarán los Clientes a la Web de Gestor de Tareas.
-      IPSERVER_RESTABLECER_PASSWORD: http://192.168.0.2:8000
+      SERVER_RESTABLECER_PASSWORD: http://gtareas.com:8000
+      SESSION_EXPIRATION: 60
     volumes:
       - './gtoauth:/app'
-    networks:
-      gtnet:
-         ipv4_address: 172.21.0.4
     depends_on:
-      gtdb:
-        condition: service_healthy
-      memcached:
-        condition: service_healthy
+      - gtdb
+#        condition: service_healthy
+      - memcached
+#        condition: service_healthy
+    networks:
+      - gtnet
 
   gtapi:
     image: marftoru/laravel:10.25.2
     container_name : gtapi
     ports:
       - '8002:8000'
-    restart: always
+    restart: unless-stopped
     environment:
       DB_HOST: gtdb
       DB_PORT: 3306
@@ -76,59 +74,55 @@ services:
       DB_PASSWORD: gtareas
       DB_DATABASE: gtareas
       MEMCACHED_HOST: memcached
-      SERVER_GTOAUTH: 172.21.0.4:8000
     volumes:
       - './gtapi:/app'
-    networks:
-      gtnet:
-         ipv4_address: 172.21.0.5
     depends_on:
-      gtdb:
-        condition: service_healthy
-      memcached:
-        condition: service_healthy
-      gtoauth:
-        condition: service_started
-
-  gtfrontend:
-    image: marftoru/laravel:10.25.2
-    container_name : gtfrontend
-    ports:
-      - '8001:8000'
-    restart: always
-    environment:
-      MEMCACHED_HOST: memcached
-      SERVER_GTAPI: 172.21.0.5:8000
-    volumes:
-      - './gtfrontend:/app'
+      - gtdb
+#        condition: service_healthy
+      - memcached
+#        condition: service_healthy
+      - gtoauth
+#        condition: service_started
     networks:
-      gtnet:
-         ipv4_address: 172.21.0.6
-    depends_on:
-      gtapi:
-        condition: service_started
+      - gtnet
+      
+#  gtfrontend:
+#    image: marftoru/laravel:10.25.2
+#    container_name : gtfrontend
+#    ports:
+#      - '8000:8000'
+#    restart: unless-stopped
+#    environment:
+#      GTLOGIN: gtlogin:8000
+#      GTLOGIN_WEB: http://gtareas.com:8001
+#    volumes:
+#      - './gtfrontend:/app'
+#    depends_on:
+#      - gtapi
+#        condition: service_started
+#    networks:
+#      - gtnet
 
   gtlogin:
     image: marftoru/laravel:10.25.2
     container_name : gtlogin
     ports:
       - '8000:8000'
-    restart: always
+    restart: unless-stopped
     environment:
-      MEMCACHED_HOST: memcached
-      GTOAUTH_LOGIN: 172.21.0.4:8000/api/auth/login
-      GTOAUTH_LOGOUT: 172.21.0.4:8000/api/auth/logout
-      GTOAUTH_USUARIOS: 172.21.0.4:8000/api/usuarios
-      GTOAUTH_PASSWORD: 172.21.0.4:8000/api/password
+      GTOAUTH_LOGIN: gtoauth:8000/api/auth/login
+      GTOAUTH_LOGOUT: gtoauth:8000/api/auth/logout
+      GTOAUTH_USUARIOS: gtoauth:8000/api/usuarios
+      GTOAUTH_PASSWORD: gtoauth:8000/api/password
+      SESSION_EXPIRATION: 60
+#      GTFRONTEND_WEB: http://gtareas.com:8000
     volumes:
       - './gtlogin:/app'
-    networks:
-      gtnet:
-         ipv4_address: 172.21.0.7
     depends_on:
-      gtoauth:
-        condition: service_started
-        
+      - gtoauth
+#        condition: service_started
+    networks:
+      - gtnet
+      
 networks:
   gtnet:
-    external: true
