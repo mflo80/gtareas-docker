@@ -4,8 +4,8 @@ services:
   gtdb:
     image: marftoru/mysql:8.1.0
     container_name : gtdb
-    command: 
-      --default-authentication-plugin=mysql_native_password 
+    command:
+      --default-authentication-plugin=mysql_native_password
       --character-set-server=utf8mb4
       --collation-server=utf8mb4_unicode_ci
     ports:
@@ -14,26 +14,41 @@ services:
     volumes:
       - './gtdb:/var/lib/mysql'
     environment:
-      MYSQL_ROOT_PASSWORD : gtareas
-      MYSQL_DATABASE : gtareas
-      TZ: America/Montevideo
-      LANG: C.UTF-8
+      - MYSQL_ROOT_PASSWORD=gtareas
+      - MYSQL_DATABASE=gtareas
+      - TZ=America/Montevideo
+      - LANG=C.UTF-8
 #    healthcheck:
 #      test: "exit 0"
     networks:
       - gtnet
-         
+
   memcached:
     image: memcached
     container_name : memcached
     restart: unless-stopped
 #    healthcheck:
 #      test: "exit 0"
-    networks:
-      gtnet:
     depends_on:
       - gtdb
 #      condition: service_healthy
+    networks:
+      - gtnet
+      
+  gtmail:
+    image: rnwood/smtp4dev:v3
+    container_name : gtmail
+    ports:
+      - '5000:80'
+      - '25:25'
+      - '143:143'
+    restart: unless-stopped
+    environment:
+      - ServerOptions__HostName=gtmail
+    depends_on:
+      - gtdb
+    networks:
+      - gtnet
 
   gtoauth:
     image: marftoru/laravel:10.25.2
@@ -42,15 +57,23 @@ services:
       - '8003:8000'
     restart: unless-stopped
     environment:
-      DB_HOST: gtdb
-      DB_PORT: 3306
-      DB_USERNAME: root
-      DB_PASSWORD: gtareas
-      DB_DATABASE: gtareas
-      MEMCACHED_HOST: memcached
+      - DB_HOST=gtdb
+      - DB_PORT=3306
+      - DB_USERNAME=root
+      - DB_PASSWORD=gtareas
+      - DB_DATABASE=gtareas
+      - MEMCACHED_HOST=memcached
+      - MAIL_MAILER=smtp
+      - MAIL_HOST=gtmail
+      - MAIL_PORT=25
+      - MAIL_USERNAME=null
+      - MAIL_PASSWORD=null
+      - MAIL_ENCRYPTION=ssl
+      - MAIL_FROM_ADDRESS="no-reply@gtareas.com"
+      - QUEUE_CONNECTION=database
       # Se debe cambiar los párametros de esta variable por la IP y Puerto del servidor al cual ingresarán los Clientes a la Web de Gestor de Tareas.
-      SERVER_RESTABLECER_PASSWORD: http://gtareas.com:8000
-      SESSION_EXPIRATION: 60
+      - SERVER_RESTABLECER_PASSWORD=http://gtareas.com:8000
+      - SESSION_EXPIRATION=60
     volumes:
       - './gtoauth:/app'
     depends_on:
@@ -58,6 +81,7 @@ services:
 #        condition: service_healthy
       - memcached
 #        condition: service_healthy
+      - gtmail
     networks:
       - gtnet
 
@@ -68,12 +92,12 @@ services:
       - '8002:8000'
     restart: unless-stopped
     environment:
-      DB_HOST: gtdb
-      DB_PORT: 3306
-      DB_USERNAME: root
-      DB_PASSWORD: gtareas
-      DB_DATABASE: gtareas
-      MEMCACHED_HOST: memcached
+      - DB_HOST=gtdb
+      - DB_PORT=3306
+      - DB_USERNAME=root
+      - DB_PASSWORD=gtareas
+      - DB_DATABASE=gtareas
+      - MEMCACHED_HOST=memcached
     volumes:
       - './gtapi:/app'
     depends_on:
@@ -110,12 +134,12 @@ services:
       - '8000:8000'
     restart: unless-stopped
     environment:
-      GTOAUTH_LOGIN: gtoauth:8000/api/auth/login
-      GTOAUTH_LOGOUT: gtoauth:8000/api/auth/logout
-      GTOAUTH_USUARIOS: gtoauth:8000/api/usuarios
-      GTOAUTH_PASSWORD: gtoauth:8000/api/password
-      SESSION_EXPIRATION: 60
-#      GTFRONTEND_WEB: http://gtareas.com:8000
+      - GTOAUTH_LOGIN=gtoauth:8000/api/auth/login
+      - GTOAUTH_LOGOUT=gtoauth:8000/api/auth/logout
+      - GTOAUTH_USUARIOS=gtoauth:8000/api/usuarios
+      - GTOAUTH_PASSWORD=gtoauth:8000/api/password
+      - SESSION_EXPIRATION=60
+#     - GTFRONTEND_WEB=http://gtareas.com:8000
     volumes:
       - './gtlogin:/app'
     depends_on:
@@ -126,3 +150,4 @@ services:
       
 networks:
   gtnet:
+    external: true
