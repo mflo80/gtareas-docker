@@ -34,7 +34,7 @@ services:
 #      condition: service_healthy
     networks:
       - gtnet
-      
+
   gtmail:
     image: rnwood/smtp4dev:v3
     container_name : gtmail
@@ -109,7 +109,7 @@ services:
 #        condition: service_started
     networks:
       - gtnet
-      
+
 #  gtfrontend:
 #    image: marftoru/laravel:10.25.2
 #    container_name : gtfrontend
@@ -147,7 +147,7 @@ services:
 #        condition: service_started
     networks:
       - gtnet
-      
+
 networks:
   gtnet:
     external: true
