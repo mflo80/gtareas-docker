@@ -21,7 +21,8 @@ services:
 #    healthcheck:
 #      test: "exit 0"
     networks:
-      - gtnet
+      gtnet:
+        ipv4_address: 192.168.66.2
 
   memcached:
     image: memcached
@@ -33,7 +34,8 @@ services:
       - gtdb
 #      condition: service_healthy
     networks:
-      - gtnet
+      gtnet:
+        ipv4_address: 192.168.66.3
 
   gtmail:
     image: rnwood/smtp4dev:v3
@@ -48,7 +50,8 @@ services:
     depends_on:
       - gtdb
     networks:
-      - gtnet
+      gtnet:
+        ipv4_address: 192.168.66.4
 
   gtoauth:
     image: marftoru/laravel:10.25.2
@@ -83,7 +86,8 @@ services:
 #        condition: service_healthy
       - gtmail
     networks:
-      - gtnet
+      gtnet:
+        ipv4_address: 192.168.66.5
 
   gtapi:
     image: marftoru/laravel:10.25.2
@@ -108,24 +112,8 @@ services:
       - gtoauth
 #        condition: service_started
     networks:
-      - gtnet
-
-#  gtfrontend:
-#    image: marftoru/laravel:10.25.2
-#    container_name : gtfrontend
-#    ports:
-#      - '8000:8000'
-#    restart: unless-stopped
-#    environment:
-#      GTLOGIN: gtlogin:8000
-#      GTLOGIN_WEB: http://gtareas.com:8001
-#    volumes:
-#      - './gtfrontend:/app'
-#    depends_on:
-#      - gtapi
-#        condition: service_started
-#    networks:
-#      - gtnet
+      gtnet:
+        ipv4_address: 192.168.66.6
 
   gtlogin:
     image: marftoru/laravel:10.25.2
@@ -146,7 +134,26 @@ services:
       - gtoauth
 #        condition: service_started
     networks:
-      - gtnet
+      gtnet:
+        ipv4_address: 192.168.66.7
+
+#  gtfrontend:
+#    image: marftoru/laravel:10.25.2
+#    container_name : gtfrontend
+#    ports:
+#      - '8000:8000'
+#    restart: unless-stopped
+#    environment:
+#      GTLOGIN: gtlogin:8000
+#      GTLOGIN_WEB: http://gtareas.com:8001
+#    volumes:
+#      - './gtfrontend:/app'
+#    depends_on:
+#      - gtapi
+#        condition: service_started
+#    networks:
+#      gtnet:
+#        ipv4_address: 192.168.66.8
 
 networks:
   gtnet:
