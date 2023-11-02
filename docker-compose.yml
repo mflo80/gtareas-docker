@@ -12,7 +12,7 @@ services:
       - '3306:3306'
     restart: unless-stopped
     volumes:
-      - './gtdb:/var/lib/mysql'
+      - './gtareas-db:/var/lib/mysql'
     environment:
       - MYSQL_ROOT_PASSWORD=gtareas
       - MYSQL_DATABASE=gtareas
@@ -78,7 +78,7 @@ services:
       - SERVER_RESTABLECER_PASSWORD=http://gtareas.com:8000
       - SESSION_EXPIRATION=60
     volumes:
-      - './gtoauth:/app'
+      - './gtareas-oauth:/app'
     depends_on:
       - gtdb
 #        condition: service_healthy
@@ -103,7 +103,7 @@ services:
       - DB_DATABASE=gtareas
       - MEMCACHED_HOST=memcached
     volumes:
-      - './gtapi:/app'
+      - './gtareas-api:/app'
     depends_on:
       - gtdb
 #        condition: service_healthy
@@ -129,7 +129,7 @@ services:
       - SESSION_EXPIRATION=60
 #     - GTFRONTEND_WEB=http://gtareas.com:8000
     volumes:
-      - './gtlogin:/app'
+      - './gtareas-login:/app'
     depends_on:
       - gtoauth
 #        condition: service_started
@@ -147,7 +147,7 @@ services:
 #      GTLOGIN: gtlogin:8000
 #      GTLOGIN_WEB: http://gtareas.com:8001
 #    volumes:
-#      - './gtfrontend:/app'
+#      - './gtareas-frontend:/app'
 #    depends_on:
 #      - gtapi
 #        condition: service_started
