@@ -10,7 +10,7 @@ gtoauth_uno() {
 gtoauth_dos() {
 	docker exec -ti gtoauth php artisan passport:keys 
 	docker exec -ti gtoauth php artisan passport:client --password --no-interaction --name="gtareas"
-    docker exec -ti gtoauth php artisan passport:client --personal --no-interaction --name="gtareas"
+    	docker exec -ti gtoauth php artisan passport:client --personal --no-interaction --name="gtareas"
 }
 
 gtapi_uno() {
@@ -58,7 +58,7 @@ if [ -f "$FILE" ]; then
 		fi
 		docker exec -d gtoauth php artisan schedule:run >> /dev/null 2>&1
 	fi
-	
+
 	if ping -c 1 -t 100 192.168.66.6; then
 		if [ ! -f gtareas-api/.env ]; then
 			cp gtareas-api/.env.example gtareas-api/.env
