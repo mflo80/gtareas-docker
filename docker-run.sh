@@ -2,7 +2,7 @@
 FILE=docker-compose.yml
 
 gtoauth_uno() {
-	docker exec -ti gtoauth composer update &&
+	docker exec -ti gtoauth composer install &&
 	docker exec -ti gtoauth php artisan key:generate &&
 	docker exec -ti gtoauth php artisan migrate:fresh --seed
 }
@@ -14,7 +14,7 @@ gtoauth_dos() {
 }
 
 gtapi_uno() {
-	docker exec -ti gtapi composer update &&
+	docker exec -ti gtapi composer install &&
 	docker exec -ti gtapi php artisan key:generate &&
 	docker exec -ti gtapi php artisan migrate --seed
 }

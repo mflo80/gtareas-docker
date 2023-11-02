@@ -4,9 +4,9 @@ ISBO - TA2 - Programación II
 
 El presente proyecto fue realizado utilizando las siguientes herramientas:
 - Docker / Compose
-- Laravel 10.25.2
-- PHP 8.2.10
-- MySQL 8.1.0
+- Laravel 10
+- PHP 8.2
+- MySQL 8.1
 
 El código del resto de los contenedores se encuentra en:
 - https://github.com/mflo80/gtareas-oauth
