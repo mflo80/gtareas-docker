@@ -42,8 +42,6 @@ services:
     container_name : gtmail
     ports:
       - '5000:80'
-      - '25:25'
-      - '143:143'
     restart: unless-stopped
     environment:
       - ServerOptions__HostName=gtmail
@@ -60,11 +58,14 @@ services:
       - '8003:8000'
     restart: unless-stopped
     environment:
+      - DB_CONNECTION=mysql
       - DB_HOST=gtdb
       - DB_PORT=3306
+      - DB_DATABASE=gtareas
       - DB_USERNAME=root
       - DB_PASSWORD=gtareas
-      - DB_DATABASE=gtareas
+#      - CACHE_DRIVER=memcached
+      - QUEUE_CONNECTION=database
       - MEMCACHED_HOST=memcached
       - MAIL_MAILER=smtp
       - MAIL_HOST=gtmail
@@ -73,7 +74,6 @@ services:
       - MAIL_PASSWORD=null
       - MAIL_ENCRYPTION=ssl
       - MAIL_FROM_ADDRESS="no-reply@gtareas.com"
-      - QUEUE_CONNECTION=database
       # Se debe cambiar los párametros de esta variable por la IP y Puerto del servidor al cual ingresarán los Clientes a la Web de Gestor de Tareas.
       - SERVER_RESTABLECER_PASSWORD=http://gtareas.com:8000
       - SESSION_EXPIRATION=60
