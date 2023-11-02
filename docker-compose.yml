@@ -126,6 +126,7 @@ services:
       - GTOAUTH_LOGOUT=gtoauth:8000/api/auth/logout
       - GTOAUTH_USUARIOS=gtoauth:8000/api/usuarios
       - GTOAUTH_PASSWORD=gtoauth:8000/api/password
+      - GTAPI_TAREAS=gtapi:8000/api/tareas
       - SESSION_EXPIRATION=60
 #     - GTFRONTEND_WEB=http://gtareas.com:8000
     volumes:
