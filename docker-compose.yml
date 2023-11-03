@@ -102,6 +102,7 @@ services:
       - DB_PASSWORD=gtareas
       - DB_DATABASE=gtareas
       - MEMCACHED_HOST=memcached
+      - GTOAUTH_AUTENTICADO=gtoauth:8000/api/auth/autenticado
     volumes:
       - './gtareas-api:/app'
     depends_on:
