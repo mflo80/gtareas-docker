@@ -10,6 +10,7 @@ gtoauth_dos() {
 	docker exec -ti gtoauth php artisan passport:keys 
 	docker exec -ti gtoauth php artisan passport:client --password --no-interaction --name="gtareas"
 	docker exec -ti gtoauth php artisan passport:client --personal --no-interaction --name="gtareas"
+	docker exec -d gtoauth php artisan schedule:run >> /dev/null 2>&1
 }
 
 gtapi_uno() {
@@ -58,6 +59,8 @@ if [ -f "$FILE" ]; then
 			cp .env.example .env
 			echo Actualizando composer
 			composer update
+			echo Activando Memcached
+			sed -i "s/env('CACHE_DRIVER', 'file'),/env('CACHE_DRIVER', 'memcached'),/g" config/cache.php
 			echo Cambiando a directorio raíz
 			cd ..
 			echo Ejecutando funciones
@@ -66,7 +69,6 @@ if [ -f "$FILE" ]; then
 		else
 			gtoauth_dos
 		fi
-		docker exec -d gtoauth php artisan schedule:run >> /dev/null 2>&1
 	fi
 
 	if ping -c 1 -t 100 192.168.66.6; then
@@ -77,6 +79,8 @@ if [ -f "$FILE" ]; then
 			cp .env.example .env
 			echo Actualizando composer
 			composer update
+			echo Activando Memcached
+			sed -i "s/env('CACHE_DRIVER', 'file'),/env('CACHE_DRIVER', 'memcached'),/g" config/cache.php
 			echo Cambiando a directorio raíz
 			cd ..
 			echo Ejecutando funciones
@@ -84,7 +88,9 @@ if [ -f "$FILE" ]; then
 		fi
 	fi
 fi
-
+echo
+docker ps
+echo
 echo "------------------------------------------------------"
 echo "          GRACIAS POR USAR GESTOR DE TAREAS           "
 echo "------------------------------------------------------"
