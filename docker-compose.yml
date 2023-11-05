@@ -24,15 +24,13 @@ services:
       gtnet:
         ipv4_address: 192.168.66.2
 
-  memcached:
-    image: memcached
-    container_name : memcached
+  gtredis:
+    image: redis:bookworm
+    container_name : gtredis
     restart: unless-stopped
-#    healthcheck:
-#      test: "exit 0"
     depends_on:
       - gtdb
-#      condition: service_healthy
+#        condition: service_healthy
     networks:
       gtnet:
         ipv4_address: 192.168.66.3
@@ -47,17 +45,20 @@ services:
       - ServerOptions__HostName=gtmail
     depends_on:
       - gtdb
+#        condition: service_healthy
     networks:
       gtnet:
         ipv4_address: 192.168.66.4
 
   gtoauth:
-    image: marftoru/laravel:10.25.2
+    image: marftoru/laravel:php82-redis
     container_name : gtoauth
     ports:
       - '8003:8000'
     restart: unless-stopped
     environment:
+      - APP_NAME=gtareas
+      - CACHE_DRIVER=redis
       - DB_CONNECTION=mysql
       - DB_HOST=gtdb
       - DB_PORT=3306
@@ -65,7 +66,6 @@ services:
       - DB_USERNAME=root
       - DB_PASSWORD=gtareas
       - QUEUE_CONNECTION=database
-      - MEMCACHED_HOST=memcached
       - MAIL_MAILER=smtp
       - MAIL_HOST=gtmail
       - MAIL_PORT=25
@@ -73,42 +73,47 @@ services:
       - MAIL_PASSWORD=null
       - MAIL_ENCRYPTION=ssl
       - MAIL_FROM_ADDRESS="no-reply@gtareas.com"
+      - REDIS_HOST=gtredis
       # Se debe cambiar los párametros de esta variable por la IP y Puerto del servidor al cual ingresarán los Clientes a la Web de Gestor de Tareas.
-      - SERVER_RESTABLECER_PASSWORD=http://gtareas.com:8000
-      - SESSION_EXPIRATION=60
+      - SERVER_RESTABLECER_PASSWORD=http://192.168.0.2:8000
+      - SESSION_LIFETIME=60
     volumes:
       - './gtareas-oauth:/app'
     depends_on:
       - gtdb
 #        condition: service_healthy
-      - memcached
-#        condition: service_healthy
+      - gtredis
+#        condition: service_started
       - gtmail
+#        condition: service_started
     networks:
       gtnet:
         ipv4_address: 192.168.66.5
 
   gtapi:
-    image: marftoru/laravel:10.25.2
+    image: marftoru/laravel:php82-redis
     container_name : gtapi
     ports:
       - '8002:8000'
     restart: unless-stopped
     environment:
+      - APP_NAME=gtareas
+      - CACHE_DRIVER=redis
       - DB_HOST=gtdb
       - DB_PORT=3306
       - DB_USERNAME=root
       - DB_PASSWORD=gtareas
       - DB_DATABASE=gtareas
-      - MEMCACHED_HOST=memcached
+      - REDIS_HOST=gtredis
       - GTOAUTH_AUTENTICADO=gtoauth:8000/api/auth/autenticado
+      - SESSION_LIFETIME=60
     volumes:
       - './gtareas-api:/app'
     depends_on:
       - gtdb
 #        condition: service_healthy
-      - memcached
-#        condition: service_healthy
+      - gtredis
+#        condition: service_started
       - gtoauth
 #        condition: service_started
     networks:
@@ -116,19 +121,22 @@ services:
         ipv4_address: 192.168.66.6
 
   gtlogin:
-    image: marftoru/laravel:10.25.2
+    image: marftoru/laravel:php82-redis
     container_name : gtlogin
     ports:
-      - '8000:8000'
+      - '8001:8000'
     restart: unless-stopped
     environment:
+      - APP_NAME=gtareas
       - GTOAUTH_LOGIN=gtoauth:8000/api/auth/login
       - GTOAUTH_LOGOUT=gtoauth:8000/api/auth/logout
+      - GTOAUTH_AUTENTICADO=gtoauth:8000/api/auth/autenticado
       - GTOAUTH_USUARIOS=gtoauth:8000/api/usuarios
       - GTOAUTH_PASSWORD=gtoauth:8000/api/password
       - GTAPI_TAREAS=gtapi:8000/api/tareas
-      - SESSION_EXPIRATION=60
-#     - GTFRONTEND_WEB=http://gtareas.com:8000
+      - GTFRONTEND_WEB=http://192.168.0.2:8000
+      - SESSION_DRIVER=cookie
+      - SESSION_LIFETIME=60
     volumes:
       - './gtareas-login:/app'
     depends_on:
@@ -138,23 +146,40 @@ services:
       gtnet:
         ipv4_address: 192.168.66.7
 
-#  gtfrontend:
-#    image: marftoru/laravel:10.25.2
-#    container_name : gtfrontend
-#    ports:
-#      - '8000:8000'
-#    restart: unless-stopped
-#    environment:
-#      GTLOGIN: gtlogin:8000
-#      GTLOGIN_WEB: http://gtareas.com:8001
-#    volumes:
-#      - './gtareas-frontend:/app'
-#    depends_on:
-#      - gtapi
+  gtfrontend:
+    image: marftoru/laravel:php82-redis
+    container_name : gtfrontend
+    ports:
+      - '8000:8000'
+    restart: unless-stopped
+    environment:
+      - APP_NAME=gtareas
+      - GTAPI_TAREAS=gtapi:8000/api/tareas
+      - GTLOGIN_WEB=http://192.168.0.2:8001
+      - SESSION_DRIVER=cookie
+      - SESSION_LIFETIME=60
+    volumes:
+      - './gtareas-frontend:/app'
+    depends_on:
+      - gtapi
 #        condition: service_started
+    networks:
+      gtnet:
+        ipv4_address: 192.168.66.8
+        
+#  gtproxy:
+#    image: marftoru/nginx:latest
+#    container_name : gtproxy
+#    ports:
+#      - '8080:80'
+#    volumes:
+#      - './gtareas-proxy/config/default.conf:/etc/nginx/conf.d/default.conf'
+#    depends_on:
+#      - gtfrontend
+#      - gtlogin
 #    networks:
 #      gtnet:
-#        ipv4_address: 192.168.66.8
+#        ipv4_address: 192.168.66.9
 
 networks:
   gtnet:
