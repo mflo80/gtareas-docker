@@ -124,7 +124,7 @@ services:
     image: marftoru/laravel:php82-redis
     container_name : gtlogin
     ports:
-      - '8001:8000'
+      - '8000:8000'
     restart: unless-stopped
     environment:
       - APP_NAME=gtareas
@@ -146,26 +146,26 @@ services:
       gtnet:
         ipv4_address: 192.168.66.7
 
-  gtfrontend:
-    image: marftoru/laravel:php82-redis
-    container_name : gtfrontend
-    ports:
-      - '8000:8000'
-    restart: unless-stopped
-    environment:
-      - APP_NAME=gtareas
-      - GTAPI_TAREAS=gtapi:8000/api/tareas
-      - GTLOGIN_WEB=http://192.168.0.2:8001
-      - SESSION_DRIVER=cookie
-      - SESSION_LIFETIME=60
-    volumes:
-      - './gtareas-frontend:/app'
-    depends_on:
-      - gtapi
+#  gtfrontend:
+#    image: marftoru/laravel:php82-redis
+#    container_name : gtfrontend
+#    ports:
+#      - '8000:8000'
+#    restart: unless-stopped
+#    environment:
+#      - APP_NAME=gtareas
+#      - GTAPI_TAREAS=gtapi:8000/api/tareas
+#      - GTLOGIN_WEB=http://192.168.0.2:8001
+#      - SESSION_DRIVER=cookie
+#      - SESSION_LIFETIME=60
+#    volumes:
+#      - './gtareas-frontend:/app'
+#    depends_on:
+#      - gtapi
 #        condition: service_started
-    networks:
-      gtnet:
-        ipv4_address: 192.168.66.8
+#    networks:
+#      gtnet:
+#        ipv4_address: 192.168.66.8
         
 #  gtproxy:
 #    image: marftoru/nginx:latest
