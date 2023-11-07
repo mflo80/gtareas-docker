@@ -7,7 +7,7 @@ gtoauth_uno() {
 }
 
 gtoauth_dos() {
-	docker exec -ti gtoauth php artisan passport:keys 
+	docker exec -ti gtoauth php artisan passport:keys
 	docker exec -ti gtoauth php artisan passport:client --password --no-interaction --name="gtareas"
 	docker exec -ti gtoauth php artisan passport:client --personal --no-interaction --name="gtareas"
 	docker exec -d gtoauth php artisan schedule:run >> /dev/null 2>&1
@@ -96,7 +96,7 @@ if [ -f "$FILE" ]; then
 	echo "------------------------------------------------------"
 	echo "               INICIANDO CONTENEDORES                 "
 	echo "------------------------------------------------------"
-    docker compose up -d
+    	docker compose up -d
 	wait
 	if ping -c 1 -t 100 192.168.66.5; then
 		echo "------------------------------------------------------"
@@ -178,7 +178,6 @@ echo "------------------------------------------------------"
 echo " Para probar Gestor de Tareas, en tu PC ingresa a la  "
 echo " dirección: $(hostname -I | cut -d' ' -f1):8000       "
 echo "------------------------------------------------------"
-echo
 echo "------------------------------------------------------"
 echo "          GRACIAS POR USAR GESTOR DE TAREAS           "
 echo "------------------------------------------------------"
