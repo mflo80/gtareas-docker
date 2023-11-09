@@ -75,7 +75,7 @@ services:
       - MAIL_FROM_ADDRESS="no-reply@gtareas.com"
       - REDIS_HOST=gtredis
       # Se debe cambiar los párametros de esta variable por la IP y Puerto del servidor al cual ingresarán los Clientes a la Web de Gestor de Tareas.
-      - SERVER_RESTABLECER_PASSWORD=http://192.168.0.2:8000
+      - SERVER_RESTABLECER_PASSWORD=http://192.168.0.2:8001
       - SESSION_LIFETIME=60
     volumes:
       - './gtareas-oauth:/app'
@@ -124,7 +124,7 @@ services:
     image: marftoru/laravel:php82-redis
     container_name : gtlogin
     ports:
-      - '8000:8000'
+      - '8001:8000'
     restart: unless-stopped
     environment:
       - APP_NAME=gtareas
@@ -166,9 +166,9 @@ services:
 #    networks:
 #      gtnet:
 #        ipv4_address: 192.168.66.8
-        
+
 #  gtproxy:
-#    image: marftoru/nginx:latest
+#    image: nginx:latest
 #    container_name : gtproxy
 #    ports:
 #      - '8080:80'
