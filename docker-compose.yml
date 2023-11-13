@@ -137,6 +137,8 @@ services:
       - GTFRONTEND_WEB=http://192.168.0.2:8000
       - SESSION_DRIVER=cookie
       - SESSION_LIFETIME=60
+      - CATEGORIAS=Análisis,Diseño,Implementación,Verificación,Mantenimiento
+      - ESTADOS=Activa,En espera,Atrasada,Cancelada,Finalizada
     volumes:
       - './gtareas-login:/app'
     depends_on:
@@ -154,6 +156,11 @@ services:
 #    restart: unless-stopped
 #    environment:
 #      - APP_NAME=gtareas
+#      - GTOAUTH_LOGIN=gtoauth:8000/api/auth/login
+#      - GTOAUTH_LOGOUT=gtoauth:8000/api/auth/logout
+#      - GTOAUTH_AUTENTICADO=gtoauth:8000/api/auth/autenticado
+#      - GTOAUTH_USUARIOS=gtoauth:8000/api/usuarios
+#      - GTOAUTH_PASSWORD=gtoauth:8000/api/password
 #      - GTAPI_TAREAS=gtapi:8000/api/tareas
 #      - GTLOGIN_WEB=http://192.168.0.2:8001
 #      - SESSION_DRIVER=cookie
