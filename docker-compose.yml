@@ -107,6 +107,7 @@ services:
       - REDIS_HOST=gtredis
       - GTOAUTH_AUTENTICADO=gtoauth:8000/api/auth/autenticado
       - SESSION_LIFETIME=60
+      - SESSION_LASTACCESS=20
     volumes:
       - './gtareas-api:/app'
     depends_on:
@@ -137,6 +138,7 @@ services:
       - GTFRONTEND_WEB=http://192.168.0.2:8000
       - SESSION_DRIVER=cookie
       - SESSION_LIFETIME=60
+      - SESSION_LASTACCESS=20
       - CATEGORIAS=Análisis,Diseño,Implementación,Verificación,Mantenimiento
       - ESTADOS=Activa,En espera,Atrasada,Cancelada,Finalizada
     volumes:

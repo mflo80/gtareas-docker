@@ -107,12 +107,12 @@ if [ -f "$FILE" ]; then
 		if [ ! -f .env ]; then
 			echo Creando .env
 			cp .env.example .env
-			echo Ejecutando funciones
+			echo Ejecutando función uno
 			gtoauth_uno
 		fi
 		echo Cambiando a directorio raíz
 		cd ..
-		echo Ejecutando funciones
+		echo Ejecutando función dos
 		gtoauth_dos
 	else
 		echo ¡¡¡GTAREAS-OAUTH NO SE ENCUENTRA ACTIVA!!!
