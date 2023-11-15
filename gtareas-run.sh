@@ -44,7 +44,7 @@ if [ ! -d gtareas-oauth ]; then
 	echo "------------------------------------------------------"
 	echo "             INSTALANDO GTAREAS-OAUTH                 "
 	echo "------------------------------------------------------"
-	git clone git@github.com:mflo80/gtareas-oauth.git
+	git clone https://github.com/mflo80/gtareas-oauth.git
 	echo Cambiando a directorio gtareas-oauth
 	cd gtareas-oauth
 	echo Actualizando composer
@@ -57,7 +57,7 @@ if [ ! -d gtareas-api ]; then
 	echo "------------------------------------------------------"
 	echo "             INSTALANDO GTAREAS-API                   "
 	echo "------------------------------------------------------"
-	git clone git@github.com:mflo80/gtareas-api.git
+	git clone https://github.com/mflo80/gtareas-api.git
 	echo Cambiando a directorio gtareas-api
 	cd gtareas-api
 	echo Actualizando composer
@@ -70,7 +70,7 @@ if [ ! -d gtareas-login ]; then
 	echo "------------------------------------------------------"
 	echo "             INSTALANDO GTAREAS-LOGIN                 "
 	echo "------------------------------------------------------"
-	git clone git@github.com:mflo80/gtareas-login.git
+	git clone https://github.com/mflo80/gtareas-login.git
 	echo Cambiando a directorio gtareas-login
 	cd gtareas-login
 	echo Actualizando composer
@@ -83,7 +83,7 @@ if [ ! -d gtareas-frontend ]; then
 	echo "------------------------------------------------------"
 	echo "             INSTALANDO GTAREAS-FRONTEND              "
 	echo "------------------------------------------------------"
-	git clone git@github.com:mflo80/gtareas-frontend.git
+	git clone https://github.com/mflo80/gtareas-frontend.git
 	echo Cambiando a directorio gtareas-frontend
 	cd gtareas-frontend
 	echo Actualizando composer
