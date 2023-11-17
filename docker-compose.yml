@@ -165,6 +165,7 @@ services:
       - GTOAUTH_PASSWORD=gtoauth:8000/api/password
       - GTAPI_TAREAS=gtapi:8000/api/tareas
       - GTAPI_ASIGNA=gtapi:8000/api/asigna
+      - GTAPI_HISTORIAL=gtapi:8000/api/historial
 #      - GTLOGIN_WEB=http://192.168.0.2:8001
       - SESSION_DRIVER=cookie
       - SESSION_LIFETIME=60
