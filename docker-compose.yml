@@ -106,6 +106,13 @@ services:
       - DB_DATABASE=gtareas
       - REDIS_HOST=gtredis
       - GTOAUTH_AUTENTICADO=gtoauth:8000/api/auth/autenticado
+      - MAIL_MAILER=smtp
+      - MAIL_HOST=gtmail
+      - MAIL_PORT=25
+      - MAIL_USERNAME=null
+      - MAIL_PASSWORD=null
+      - MAIL_ENCRYPTION=ssl
+      - MAIL_FROM_ADDRESS="no-reply@gtareas.com"
       - SESSION_LIFETIME=60
       - SESSION_LASTACCESS=20
     volumes:
@@ -116,6 +123,8 @@ services:
       - gtredis
 #        condition: service_started
       - gtoauth
+#        condition: service_started
+      - gtmail
 #        condition: service_started
     networks:
       gtnet:
@@ -166,6 +175,8 @@ services:
       - GTAPI_TAREAS=gtapi:8000/api/tareas
       - GTAPI_ASIGNA=gtapi:8000/api/asigna
       - GTAPI_HISTORIAL=gtapi:8000/api/historial
+      - GTAPI_CORREOS=gtapi:8000/api/correos
+      - GTAPI_COMENTARIOS=gtapi:8000/api/comenta
 #      - GTLOGIN_WEB=http://192.168.0.2:8001
       - SESSION_DRIVER=cookie
       - SESSION_LIFETIME=60
