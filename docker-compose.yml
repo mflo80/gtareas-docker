@@ -2,7 +2,7 @@ version: '3'
 
 services:
   gtdb:
-    image: marftoru/mysql:8.1.0
+    image: marftoru/mysql:8.1.0-max
     container_name : gtdb
     command:
       --default-authentication-plugin=mysql_native_password
@@ -174,7 +174,8 @@ services:
       - GTOAUTH_PASSWORD=gtoauth:8000/api/password
       - GTAPI_TAREAS=gtapi:8000/api/tareas
       - GTAPI_ASIGNA=gtapi:8000/api/asigna
-      - GTAPI_HISTORIAL=gtapi:8000/api/historial
+      - GTAPI_HISTORIAL_TAREAS=gtapi:8000/api/historial/tareas
+      - GTAPI_HISTORIAL_COMENTARIOS=gtapi:8000/api/historial/comentarios
       - GTAPI_CORREOS=gtapi:8000/api/correos
       - GTAPI_COMENTARIOS=gtapi:8000/api/comenta
 #      - GTLOGIN_WEB=http://192.168.0.2:8001
