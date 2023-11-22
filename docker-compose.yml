@@ -116,6 +116,8 @@ services:
       - MAIL_FROM_ADDRESS="no-reply@gtareas.com"
       - SESSION_LIFETIME=60
       - SESSION_LASTACCESS=20
+      - CATEGORIAS=Análisis,Diseño,Implementación,Verificación,Mantenimiento
+      - ESTADOS=Activa,En espera,Atrasada,Cancelada,Finalizada
     volumes:
       - './gtareas-api:/app'
     depends_on:
