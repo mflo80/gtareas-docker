@@ -76,6 +76,7 @@ services:
       - REDIS_HOST=gtredis
       # Se debe cambiar los párametros de esta variable por la IP y Puerto del servidor al cual ingresarán los Clientes a la Web de Gestor de Tareas.
       - SERVER_RESTABLECER_PASSWORD=http://192.168.0.2:8000
+      # - SERVER-RESTABLECER_PASSWORD=http://localhost:8000
       - SESSION_LIFETIME=60
     volumes:
       - './gtareas-oauth:/app'
@@ -178,7 +179,7 @@ services:
       - GTAPI_HISTORIAL_COMENTARIOS=gtapi:8000/api/historial/comentarios
       - GTAPI_CORREOS=gtapi:8000/api/correos
       - GTAPI_COMENTARIOS=gtapi:8000/api/comenta
-#      - GTLOGIN_WEB=http://192.168.0.2:8001
+#      - GTLOGIN_WEB=http://localhost:8001
       - SESSION_DRIVER=cookie
       - SESSION_LIFETIME=60
       - SESSION_LASTACCESS=20

@@ -33,7 +33,7 @@ echo "------------------------------------------------------"
 if ping -c 1 -t 100 192.168.66.1; then
 	echo La RED gtnet ya se encuentra creada
 else
-	docker network create --driver=bridge --subnet=192.168.66.0/24 gtnet
+	docker network create --driver=bridge --subnet=192.168.66.0/24 --gateway=192.168.66.1 gtnet
 fi
 
 if [ ! -d gtareas-db ]; then
@@ -106,7 +106,7 @@ if [ -f "$FILE" ]; then
 		cd gtareas-oauth
 		if [ ! -f .env ]; then
 			echo Creando .env
-			cp .env.example .env
+			cp ".env.example" .env
 			echo Ejecutando función uno
 			gtoauth_uno
 		fi
@@ -126,7 +126,7 @@ if [ -f "$FILE" ]; then
 		cd gtareas-api
 		if [ ! -f .env ]; then
 			echo Creando .env
-			cp .env.example .env
+			cp "env.example" .env
 			echo Ejecutando funciones
 			gtapi_uno
 		fi
@@ -144,7 +144,7 @@ if [ -f "$FILE" ]; then
 			echo Cambiando a directorio gtareas-login
 			cd gtareas-login
 			echo Creando .env
-			cp .env.example .env
+			cp ".env.example" .env
 			echo Ejecutando funciones
 			gtlogin_uno
 			echo Cambiando a directorio raíz
@@ -162,7 +162,7 @@ if [ -f "$FILE" ]; then
 			echo Cambiando a directorio gtareas-frontend
 			cd gtareas-frontend
 			echo Creando .env
-			cp .env.example .env
+			cp ".env.example" .env
 			echo Ejecutando funciones
 			gtfrontend_uno
 			echo Cambiando a directorio raíz
