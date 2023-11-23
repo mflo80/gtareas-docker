@@ -8,8 +8,8 @@ services:
       --default-authentication-plugin=mysql_native_password
       --character-set-server=utf8mb4
       --collation-server=utf8mb4_unicode_ci
-    ports:
-      - '3306:3306'
+#    ports:
+#      - '3306:3306'
     restart: unless-stopped
     volumes:
       - './gtareas-db:/var/lib/mysql'
@@ -53,8 +53,8 @@ services:
   gtoauth:
     image: marftoru/laravel:php82-redis
     container_name : gtoauth
-    ports:
-      - '8003:8000'
+#    ports:
+#      - '8003:8000'      
     restart: unless-stopped
     environment:
       - APP_NAME=gtareas
@@ -94,8 +94,8 @@ services:
   gtapi:
     image: marftoru/laravel:php82-redis
     container_name : gtapi
-    ports:
-      - '8002:8000'
+#    ports:
+#      - '8002:8000' 
     restart: unless-stopped
     environment:
       - APP_NAME=gtareas

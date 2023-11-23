@@ -126,7 +126,7 @@ if [ -f "$FILE" ]; then
 		cd gtareas-api
 		if [ ! -f .env ]; then
 			echo Creando .env
-			cp "env.example" .env
+			cp ".env.example" .env
 			echo Ejecutando funciones
 			gtapi_uno
 		fi
