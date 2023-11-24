@@ -54,7 +54,7 @@ services:
     image: marftoru/laravel:php82-redis
     container_name : gtoauth
     ports:
-      - '8003:8000'      
+      - '8002:8000'      
     restart: unless-stopped
     environment:
       - APP_NAME=gtareas
@@ -95,7 +95,7 @@ services:
     image: marftoru/laravel:php82-redis
     container_name : gtapi
     ports:
-      - '8002:8000' 
+      - '8001:8000' 
     restart: unless-stopped
     environment:
       - APP_NAME=gtareas
