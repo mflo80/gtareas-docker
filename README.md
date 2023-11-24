@@ -11,7 +11,6 @@ El presente proyecto fue realizado utilizando las siguientes herramientas:
 
 El código del resto de los contenedores se encuentra en:
 - https://github.com/mflo80/gtareas-oauth
-- https://github.com/mflo80/gtareas-login
 - https://github.com/mflo80/gtareas-api
 - https://github.com/mflo80/gtareas-frontend
 
@@ -53,6 +52,10 @@ Ejemplo: para este proyecto la imagen fue creada como marftoru/laravel:php82-red
 
 
 ### Script de Instalación
+- sh gtareas-run.sh
+  
+(Observaciones: este fue probado únicamente con Ubuntu Server 22.04)
+
 ```
 #!/bin/bash
 FILE=docker-compose.yml
@@ -63,7 +66,7 @@ gtoauth_uno() {
 }
 
 gtoauth_dos() {
-	docker exec -ti gtoauth php artisan passport:keys 
+	docker exec -ti gtoauth php artisan passport:keys
 	docker exec -ti gtoauth php artisan passport:client --password --no-interaction --name="gtareas"
 	docker exec -ti gtoauth php artisan passport:client --personal --no-interaction --name="gtareas"
 	docker exec -d gtoauth php artisan schedule:run >> /dev/null 2>&1
@@ -72,10 +75,6 @@ gtoauth_dos() {
 gtapi_uno() {
 	docker exec -ti gtapi php artisan key:generate &&
 	docker exec -ti gtapi php artisan migrate --seed
-}
-
-gtlogin_uno() {
-	docker exec -ti gtlogin php artisan key:generate
 }
 
 gtfrontend_uno() {
@@ -89,7 +88,7 @@ echo "------------------------------------------------------"
 if ping -c 1 -t 100 192.168.66.1; then
 	echo La RED gtnet ya se encuentra creada
 else
-	docker network create --driver=bridge --subnet=192.168.66.0/24 gtnet
+	docker network create --driver=bridge --subnet=192.168.66.0/24 --gateway=192.168.66.1 gtnet
 fi
 
 if [ ! -d gtareas-db ]; then
@@ -100,7 +99,7 @@ if [ ! -d gtareas-oauth ]; then
 	echo "------------------------------------------------------"
 	echo "             INSTALANDO GTAREAS-OAUTH                 "
 	echo "------------------------------------------------------"
-	git clone git@github.com:mflo80/gtareas-oauth.git
+	git clone https://github.com/mflo80/gtareas-oauth.git
 	echo Cambiando a directorio gtareas-oauth
 	cd gtareas-oauth
 	echo Actualizando composer
@@ -113,22 +112,9 @@ if [ ! -d gtareas-api ]; then
 	echo "------------------------------------------------------"
 	echo "             INSTALANDO GTAREAS-API                   "
 	echo "------------------------------------------------------"
-	git clone git@github.com:mflo80/gtareas-api.git
+	git clone https://github.com/mflo80/gtareas-api.git
 	echo Cambiando a directorio gtareas-api
 	cd gtareas-api
-	echo Actualizando composer
-	composer update
-	echo Cambiando a directorio raíz
-	cd ..
-fi
-
-if [ ! -d gtareas-login ]; then
-	echo "------------------------------------------------------"
-	echo "             INSTALANDO GTAREAS-LOGIN                 "
-	echo "------------------------------------------------------"
-	git clone git@github.com:mflo80/gtareas-login.git
-	echo Cambiando a directorio gtareas-login
-	cd gtareas-login
 	echo Actualizando composer
 	composer update
 	echo Cambiando a directorio raíz
@@ -139,7 +125,7 @@ if [ ! -d gtareas-frontend ]; then
 	echo "------------------------------------------------------"
 	echo "             INSTALANDO GTAREAS-FRONTEND              "
 	echo "------------------------------------------------------"
-	git clone git@github.com:mflo80/gtareas-frontend.git
+	git clone https://github.com/mflo80/gtareas-frontend.git
 	echo Cambiando a directorio gtareas-frontend
 	cd gtareas-frontend
 	echo Actualizando composer
@@ -152,7 +138,7 @@ if [ -f "$FILE" ]; then
 	echo "------------------------------------------------------"
 	echo "               INICIANDO CONTENEDORES                 "
 	echo "------------------------------------------------------"
-    docker compose up -d
+    	docker compose up -d
 	wait
 	if ping -c 1 -t 100 192.168.66.5; then
 		echo "------------------------------------------------------"
@@ -162,13 +148,13 @@ if [ -f "$FILE" ]; then
 		cd gtareas-oauth
 		if [ ! -f .env ]; then
 			echo Creando .env
-			cp .env.example .env
-			echo Ejecutando funciones
+			cp ".env.example" .env
+			echo Ejecutando función uno
 			gtoauth_uno
 		fi
 		echo Cambiando a directorio raíz
 		cd ..
-		echo Ejecutando funciones
+		echo Ejecutando función dos
 		gtoauth_dos
 	else
 		echo ¡¡¡GTAREAS-OAUTH NO SE ENCUENTRA ACTIVA!!!
@@ -182,7 +168,7 @@ if [ -f "$FILE" ]; then
 		cd gtareas-api
 		if [ ! -f .env ]; then
 			echo Creando .env
-			cp .env.example .env
+			cp ".env.example" .env
 			echo Ejecutando funciones
 			gtapi_uno
 		fi
@@ -195,30 +181,12 @@ if [ -f "$FILE" ]; then
 	if ping -c 1 -t 100 192.168.66.7; then
 		if [ ! -f .env ]; then
 			echo "------------------------------------------------------"
-			echo "            CONFIGURANDO GTAREAS-LOGIN                "
-			echo "------------------------------------------------------"
-			echo Cambiando a directorio gtareas-login
-			cd gtareas-login
-			echo Creando .env
-			cp .env.example .env
-			echo Ejecutando funciones
-			gtlogin_uno
-			echo Cambiando a directorio raíz
-			cd ..
-		fi
-	else
-		echo ¡¡¡GTAREAS-LOGIN NO SE ENCUENTRA ACTIVA!!!
-	fi
-
-	if ping -c 1 -t 100 192.168.66.8; then
-		if [ ! -f .env ]; then
-			echo "------------------------------------------------------"
 			echo "            CONFIGURANDO GTAREAS-FRONTEND             "
 			echo "------------------------------------------------------"
 			echo Cambiando a directorio gtareas-frontend
 			cd gtareas-frontend
 			echo Creando .env
-			cp .env.example .env
+			cp ".env.example" .env
 			echo Ejecutando funciones
 			gtfrontend_uno
 			echo Cambiando a directorio raíz
@@ -234,19 +202,20 @@ echo "------------------------------------------------------"
 echo " Para probar Gestor de Tareas, en tu PC ingresa a la  "
 echo " dirección: $(hostname -I | cut -d' ' -f1):8000       "
 echo "------------------------------------------------------"
-echo
 echo "------------------------------------------------------"
 echo "          GRACIAS POR USAR GESTOR DE TAREAS           "
 echo "------------------------------------------------------"
 ```
 
 ### docker-compose.yml
+IMPORTANTE: se debe de modificar la dirección de la variable SERVER_RESTABLECER_PASSWORD del contenedor gtoauth, a fin de que al solicitar un usuario restablecer su contraseña, lo redirija a la página correspondiente, o sea dicha dirección sería la de la página principal al cual se ingresa desde el navegador al frontend Ej: http://localhost:8000 o http://gestordetareas.com:8000, etc.
+
 ```
 version: '3'
 
 services:
   gtdb:
-    image: marftoru/mysql:8.1.0
+    image: marftoru/mysql:8.1.0-max
     container_name : gtdb
     command:
       --default-authentication-plugin=mysql_native_password
@@ -298,7 +267,7 @@ services:
     image: marftoru/laravel:php82-redis
     container_name : gtoauth
     ports:
-      - '8003:8000'
+      - '8002:8000'      
     restart: unless-stopped
     environment:
       - APP_NAME=gtareas
@@ -318,11 +287,9 @@ services:
       - MAIL_ENCRYPTION=ssl
       - MAIL_FROM_ADDRESS="no-reply@gtareas.com"
       - REDIS_HOST=gtredis
-      # Se debe cambiar los párametros de esta variable por la IP y Puerto del servidor
-      # al cual ingresarán los Clientes a la Web de Gestor de Tareas.
-      # --------------- CAMBIAR IP Y PUERTO ------------------
+      # Se debe cambiar los párametros de esta variable por la IP y Puerto del servidor al cual ingresarán los Clientes a la Web de Gestor de Tareas.
       - SERVER_RESTABLECER_PASSWORD=http://192.168.0.2:8000
-      # ------------------------------------------------------
+      # - SERVER-RESTABLECER_PASSWORD=http://localhost:8000
       - SESSION_LIFETIME=60
     volumes:
       - './gtareas-oauth:/app'
@@ -341,7 +308,7 @@ services:
     image: marftoru/laravel:php82-redis
     container_name : gtapi
     ports:
-      - '8002:8000'
+      - '8001:8000' 
     restart: unless-stopped
     environment:
       - APP_NAME=gtareas
@@ -353,7 +320,17 @@ services:
       - DB_DATABASE=gtareas
       - REDIS_HOST=gtredis
       - GTOAUTH_AUTENTICADO=gtoauth:8000/api/auth/autenticado
+      - MAIL_MAILER=smtp
+      - MAIL_HOST=gtmail
+      - MAIL_PORT=25
+      - MAIL_USERNAME=null
+      - MAIL_PASSWORD=null
+      - MAIL_ENCRYPTION=ssl
+      - MAIL_FROM_ADDRESS="no-reply@gtareas.com"
       - SESSION_LIFETIME=60
+      - SESSION_LASTACCESS=20
+      - CATEGORIAS=Análisis,Diseño,Implementación,Verificación,Mantenimiento
+      - ESTADOS=Activa,En espera,Atrasada,Cancelada,Finalizada
     volumes:
       - './gtareas-api:/app'
     depends_on:
@@ -363,35 +340,11 @@ services:
         condition: service_started
       gtoauth:
         condition: service_started
-    networks:
-      gtnet:
-        ipv4_address: 192.168.66.6
-
-  gtlogin:
-    image: marftoru/laravel:php82-redis
-    container_name : gtlogin
-    ports:
-      - '8001:8000'
-    restart: unless-stopped
-    environment:
-      - APP_NAME=gtareas
-      - GTOAUTH_LOGIN=gtoauth:8000/api/auth/login
-      - GTOAUTH_LOGOUT=gtoauth:8000/api/auth/logout
-      - GTOAUTH_AUTENTICADO=gtoauth:8000/api/auth/autenticado
-      - GTOAUTH_USUARIOS=gtoauth:8000/api/usuarios
-      - GTOAUTH_PASSWORD=gtoauth:8000/api/password
-      - GTAPI_TAREAS=gtapi:8000/api/tareas
-      - GTFRONTEND_WEB=http://192.168.0.2:8000
-      - SESSION_DRIVER=cookie
-      - SESSION_LIFETIME=60
-    volumes:
-      - './gtareas-login:/app'
-    depends_on:
-      gtoauth:
+      gtmail:
         condition: service_started
     networks:
       gtnet:
-        ipv4_address: 192.168.66.7
+        ipv4_address: 192.168.66.6
 
   gtfrontend:
     image: marftoru/laravel:php82-redis
@@ -401,10 +354,22 @@ services:
     restart: unless-stopped
     environment:
       - APP_NAME=gtareas
+      - GTOAUTH_LOGIN=gtoauth:8000/api/auth/login
+      - GTOAUTH_LOGOUT=gtoauth:8000/api/auth/logout
+      - GTOAUTH_AUTENTICADO=gtoauth:8000/api/auth/autenticado
+      - GTOAUTH_USUARIOS=gtoauth:8000/api/usuarios
+      - GTOAUTH_PASSWORD=gtoauth:8000/api/password
       - GTAPI_TAREAS=gtapi:8000/api/tareas
-      - GTLOGIN_WEB=http://192.168.0.2:8001
+      - GTAPI_ASIGNA=gtapi:8000/api/asigna
+      - GTAPI_HISTORIAL_TAREAS=gtapi:8000/api/historial/tareas
+      - GTAPI_HISTORIAL_COMENTARIOS=gtapi:8000/api/historial/comentarios
+      - GTAPI_CORREOS=gtapi:8000/api/correos
+      - GTAPI_COMENTARIOS=gtapi:8000/api/comenta
       - SESSION_DRIVER=cookie
       - SESSION_LIFETIME=60
+      - SESSION_LASTACCESS=20
+      - CATEGORIAS=Análisis,Diseño,Implementación,Verificación,Mantenimiento
+      - ESTADOS=Activa,En espera,Atrasada,Cancelada,Finalizada
     volumes:
       - './gtareas-frontend:/app'
     depends_on:
@@ -412,23 +377,7 @@ services:
         condition: service_started
     networks:
       gtnet:
-        ipv4_address: 192.168.66.8
-
-# ------- EN ETAPA DE PRUEBAS -------        
-#  gtproxy:
-#    image: marftoru/nginx:latest
-#    container_name : gtproxy
-#    ports:
-#      - '8080:80'
-#    volumes:
-#      - './gtareas-proxy/config/default.conf:/etc/nginx/conf.d/default.conf'
-#    depends_on:
-#      - gtfrontend
-#      - gtlogin
-#    networks:
-#      gtnet:
-#        ipv4_address: 192.168.66.9
-# -----------------------------------
+        ipv4_address: 192.168.66.7
 
 networks:
   gtnet:
