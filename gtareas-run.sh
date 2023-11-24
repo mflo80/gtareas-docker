@@ -18,9 +18,9 @@ gtapi_uno() {
 	docker exec -ti gtapi php artisan migrate --seed
 }
 
-gtlogin_uno() {
-	docker exec -ti gtlogin php artisan key:generate
-}
+#gtlogin_uno() {
+#	docker exec -ti gtlogin php artisan key:generate
+#}
 
 gtfrontend_uno() {
 	docker exec -ti gtfrontend php artisan key:generate
@@ -66,18 +66,19 @@ if [ ! -d gtareas-api ]; then
 	cd ..
 fi
 
-if [ ! -d gtareas-login ]; then
-	echo "------------------------------------------------------"
-	echo "             INSTALANDO GTAREAS-LOGIN                 "
-	echo "------------------------------------------------------"
-	git clone https://github.com/mflo80/gtareas-login.git
-	echo Cambiando a directorio gtareas-login
-	cd gtareas-login
-	echo Actualizando composer
-	composer update
-	echo Cambiando a directorio raíz
-	cd ..
-fi
+
+#if [ ! -d gtareas-login ]; then
+#	echo "------------------------------------------------------"
+#	echo "             INSTALANDO GTAREAS-LOGIN                 "
+#	echo "------------------------------------------------------"
+#	git clone https://github.com/mflo80/gtareas-login.git
+#	echo Cambiando a directorio gtareas-login
+#	cd gtareas-login
+#	echo Actualizando composer
+#	composer update
+#	echo Cambiando a directorio raíz
+#	cd ..
+#fi
 
 if [ ! -d gtareas-frontend ]; then
 	echo "------------------------------------------------------"
@@ -136,23 +137,23 @@ if [ -f "$FILE" ]; then
 		echo ¡¡¡GTAREAS-API NO SE ENCUENTRA ACTIVA!!!
 	fi
 
-	if ping -c 1 -t 100 192.168.66.7; then
-		if [ ! -f .env ]; then
-			echo "------------------------------------------------------"
-			echo "            CONFIGURANDO GTAREAS-LOGIN                "
-			echo "------------------------------------------------------"
-			echo Cambiando a directorio gtareas-login
-			cd gtareas-login
-			echo Creando .env
-			cp ".env.example" .env
-			echo Ejecutando funciones
-			gtlogin_uno
-			echo Cambiando a directorio raíz
-			cd ..
-		fi
-	else
-		echo ¡¡¡GTAREAS-LOGIN NO SE ENCUENTRA ACTIVA!!!
-	fi
+#	if ping -c 1 -t 100 192.168.66.7; then
+#		if [ ! -f .env ]; then
+#			echo "------------------------------------------------------"
+#			echo "            CONFIGURANDO GTAREAS-LOGIN                "
+#			echo "------------------------------------------------------"
+#			echo Cambiando a directorio gtareas-login
+#			cd gtareas-login
+#			echo Creando .env
+#			cp ".env.example" .env
+#			echo Ejecutando funciones
+#			gtlogin_uno
+#			echo Cambiando a directorio raíz
+#			cd ..
+#		fi
+#	else
+#		echo ¡¡¡GTAREAS-LOGIN NO SE ENCUENTRA ACTIVA!!!
+#	fi
 
 	if ping -c 1 -t 100 192.168.66.8; then
 		if [ ! -f .env ]; then

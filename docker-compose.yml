@@ -196,20 +196,6 @@ services:
       gtnet:
         ipv4_address: 192.168.66.8
 
-#  gtproxy:
-#    image: nginx:latest
-#    container_name : gtproxy
-#    ports:
-#      - '8080:80'
-#    volumes:
-#      - './gtareas-proxy/config/default.conf:/etc/nginx/conf.d/default.conf'
-#    depends_on:
-#      - gtfrontend
-#      - gtlogin
-#    networks:
-#      gtnet:
-#        ipv4_address: 192.168.66.9
-
 networks:
   gtnet:
     external: true
