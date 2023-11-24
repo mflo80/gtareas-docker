@@ -32,49 +32,6 @@ else
 	docker network create --driver=bridge --subnet=192.168.66.0/24 --gateway=192.168.66.1 gtnet
 fi
 
-if [ ! -d gtareas-db ]; then
-	mkdir gtareas-db
-fi
-
-if [ ! -d gtareas-oauth ]; then
-	echo "------------------------------------------------------"
-	echo "             INSTALANDO GTAREAS-OAUTH                 "
-	echo "------------------------------------------------------"
-	git clone https://github.com/mflo80/gtareas-oauth.git
-	echo Cambiando a directorio gtareas-oauth
-	cd gtareas-oauth
-	echo Actualizando composer
-	composer update
-	echo Cambiando a directorio raíz
-	cd ..
-fi
-
-if [ ! -d gtareas-api ]; then
-	echo "------------------------------------------------------"
-	echo "             INSTALANDO GTAREAS-API                   "
-	echo "------------------------------------------------------"
-	git clone https://github.com/mflo80/gtareas-api.git
-	echo Cambiando a directorio gtareas-api
-	cd gtareas-api
-	echo Actualizando composer
-	composer update
-	echo Cambiando a directorio raíz
-	cd ..
-fi
-
-if [ ! -d gtareas-frontend ]; then
-	echo "------------------------------------------------------"
-	echo "             INSTALANDO GTAREAS-FRONTEND              "
-	echo "------------------------------------------------------"
-	git clone https://github.com/mflo80/gtareas-frontend.git
-	echo Cambiando a directorio gtareas-frontend
-	cd gtareas-frontend
-	echo Actualizando composer
-	composer update
-	echo Cambiando a directorio raíz
-	cd ..
-fi
-
 if [ -f "$FILE" ]; then
 	echo "------------------------------------------------------"
 	echo "               INICIANDO CONTENEDORES                 "
@@ -87,12 +44,10 @@ if [ -f "$FILE" ]; then
 		echo "------------------------------------------------------"
 		echo Cambiando a directorio gtareas-oauth
 		cd gtareas-oauth
-		if [ ! -f .env ]; then
-			echo Creando .env
-			cp ".env.example" .env
-			echo Ejecutando función uno
-			gtoauth_uno
-		fi
+		echo Creando .env
+		cp -f ".env.example" .env
+		echo Ejecutando función uno
+		gtoauth_uno
 		echo Cambiando a directorio raíz
 		cd ..
 		echo Ejecutando función dos
@@ -107,12 +62,10 @@ if [ -f "$FILE" ]; then
 		echo "------------------------------------------------------"
 		echo Cambiando a directorio gtareas-api
 		cd gtareas-api
-		if [ ! -f .env ]; then
-			echo Creando .env
-			cp ".env.example" .env
-			echo Ejecutando funciones
-			gtapi_uno
-		fi
+		echo Creando .env
+		cp -f ".env.example" .env
+		echo Ejecutando funciones
+		gtapi_uno
 		echo Cambiando a directorio raíz
 		cd ..
 	else
@@ -120,19 +73,17 @@ if [ -f "$FILE" ]; then
 	fi
 
 	if ping -c 1 -t 100 192.168.66.7; then
-		if [ ! -f .env ]; then
-			echo "------------------------------------------------------"
-			echo "            CONFIGURANDO GTAREAS-FRONTEND             "
-			echo "------------------------------------------------------"
-			echo Cambiando a directorio gtareas-frontend
-			cd gtareas-frontend
-			echo Creando .env
-			cp ".env.example" .env
-			echo Ejecutando funciones
-			gtfrontend_uno
-			echo Cambiando a directorio raíz
-			cd ..
-		fi
+		echo "------------------------------------------------------"
+		echo "            CONFIGURANDO GTAREAS-FRONTEND             "
+		echo "------------------------------------------------------"
+		echo Cambiando a directorio gtareas-frontend
+		cd gtareas-frontend
+		echo Creando .env
+		cp -f ".env.example" .env
+		echo Ejecutando funciones
+		gtfrontend_uno
+		echo Cambiando a directorio raíz
+		cd ..
 	else
 		echo ¡¡¡GTAREAS-FRONTEND NO SE ENCUENTRA ACTIVA!!!
 	fi
