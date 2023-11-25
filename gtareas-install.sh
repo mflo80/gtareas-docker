@@ -64,6 +64,14 @@ gtfrontend_uno() {
 	echo "------------------------------------------------------"
 }
 
+gttest() {
+	echo "------------------------------------------------------"
+	echo " ///////        GENERANDO UNIT TEST           /////// "
+	echo "------------------------------------------------------"
+	docker exec -ti gtoauth php artisan test
+	docker exec -ti gtapi php artisan test
+}
+
 echo "------------------------------------------------------"
 echo "            INICIANDO GESTOR DE TAREAS                "
 echo "------------------------------------------------------"
@@ -185,6 +193,10 @@ if [ -f "$FILE" ]; then
 	fi
 fi
 echo
+gttest
+echo "------------------------------------------------------"
+echo "                   TEST FINALIZADO                    "
+echo "------------------------------------------------------"
 docker ps
 echo "------------------------------------------------------"
 echo " Para probar Gestor de Tareas, en tu PC ingresa a la  "

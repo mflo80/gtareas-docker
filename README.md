@@ -123,6 +123,14 @@ gtfrontend_uno() {
 	echo "------------------------------------------------------"
 }
 
+gttest() {
+	echo "------------------------------------------------------"
+	echo " ///////        GENERANDO UNIT TEST           /////// "
+	echo "------------------------------------------------------"
+	docker exec -ti gtoauth php artisan test
+	docker exec -ti gtapi php artisan test
+}
+
 echo "------------------------------------------------------"
 echo "            INICIANDO GESTOR DE TAREAS                "
 echo "------------------------------------------------------"
@@ -244,6 +252,10 @@ if [ -f "$FILE" ]; then
 	fi
 fi
 echo
+gttest
+echo "------------------------------------------------------"
+echo "                   TEST FINALIZADO                    "
+echo "------------------------------------------------------"
 docker ps
 echo "------------------------------------------------------"
 echo " Para probar Gestor de Tareas, en tu PC ingresa a la  "
@@ -337,7 +349,6 @@ services:
       - MAIL_FROM_ADDRESS="no-reply@gtareas.com"
       - REDIS_HOST=gtredis
       # Se debe cambiar los párametros de esta variable por la IP y Puerto del servidor al cual ingresarán los Clientes a la Web de Gestor de Tareas.
-      # - SERVER_RESTABLECER_PASSWORD=http://192.168.0.2:8000
       - SERVER-RESTABLECER_PASSWORD=http://localhost:8000
       - SESSION_LIFETIME=60
     volumes:
