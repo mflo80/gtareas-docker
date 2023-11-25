@@ -61,35 +61,88 @@ Ejemplo: para este proyecto la imagen fue creada como marftoru/laravel:php82-red
 FILE=docker-compose.yml
 
 gtoauth_uno() {
+	echo "------------------------------------------------------"
+	echo "          GENERANDO KEY PARA GTOAUTH                  "
+	echo "------------------------------------------------------"
 	docker exec -ti gtoauth php artisan key:generate &&
+	echo "------------------------------------------------------"
+	echo "            CARGANDO BASE DE DATOS                    "
+	echo "------------------------------------------------------"
 	docker exec -ti gtoauth php artisan migrate:fresh --seed
 }
 
 gtoauth_dos() {
+	echo "------------------------------------------------------"
+	echo "           GENERANDO PASSPORT KEYS                    "
+	echo "------------------------------------------------------"
 	docker exec -ti gtoauth php artisan passport:keys
 	docker exec -ti gtoauth php artisan passport:client --password --no-interaction --name="gtareas"
 	docker exec -ti gtoauth php artisan passport:client --personal --no-interaction --name="gtareas"
+	echo "------------------------------------------------------"
+	echo "         EJECUTANDO TAREAS PROGRAMADAS                "
+	echo "------------------------------------------------------"
 	docker exec -d gtoauth php artisan schedule:run >> /dev/null 2>&1
+	echo "------------------------------------------------------"
+	echo "------------------------------------------------------"
+	echo "------------------------------------------------------"
+	echo "       FINALIZADA CONFIGURACIÓN DE GTOAUTH            "
+	echo "------------------------------------------------------"
+	echo "------------------------------------------------------"
+	echo "------------------------------------------------------"
 }
 
 gtapi_uno() {
+	echo "------------------------------------------------------"
+	echo "           GENERANDO KEY PARA GTAPI                   "
+	echo "------------------------------------------------------"
 	docker exec -ti gtapi php artisan key:generate &&
+	echo "------------------------------------------------------"
+	echo "            CARGANDO BASE DE DATOS                    "
+	echo "------------------------------------------------------"
 	docker exec -ti gtapi php artisan migrate --seed
+	echo "------------------------------------------------------"
+	echo "------------------------------------------------------"
+	echo "------------------------------------------------------"
+	echo "        FINALIZADA CONFIGURACIÓN DE GTAPI             "
+	echo "------------------------------------------------------"
+	echo "------------------------------------------------------"
+	echo "------------------------------------------------------"
 }
 
 gtfrontend_uno() {
+	echo "------------------------------------------------------"
+	echo "          GENERANDO KEY PARA GTFRONTEND               "
+	echo "------------------------------------------------------"
 	docker exec -ti gtfrontend php artisan key:generate
+	echo "------------------------------------------------------"
+	echo "------------------------------------------------------"
+	echo "------------------------------------------------------"
+	echo "      FINALIZADA CONFIGURACIÓN DE GTFRONTEND          "
+	echo "------------------------------------------------------"
+	echo "------------------------------------------------------"
+	echo "------------------------------------------------------"
 }
 
 echo "------------------------------------------------------"
 echo "            INICIANDO GESTOR DE TAREAS                "
 echo "------------------------------------------------------"
 
+echo "------------------------------------------------------"
+echo "         VERIFICANDO SI YA EXISTE RED GTNET           "
+echo "------------------------------------------------------"
+
 if ping -c 1 -t 100 192.168.66.1; then
 	echo La RED gtnet ya se encuentra creada
 else
+	echo "------------------------------------------------------"
+	echo "                CREANDO RED GTNET                     "
+	echo "------------------------------------------------------"
 	docker network create --driver=bridge --subnet=192.168.66.0/24 --gateway=192.168.66.1 gtnet
 fi
+
+echo "------------------------------------------------------"
+echo "               CREANDO DIRECTORIOS                    "
+echo "------------------------------------------------------"
 
 if [ ! -d gtareas-db ]; then
 	mkdir gtareas-db
@@ -146,12 +199,10 @@ if [ -f "$FILE" ]; then
 		echo "------------------------------------------------------"
 		echo Cambiando a directorio gtareas-oauth
 		cd gtareas-oauth
-		if [ ! -f .env ]; then
-			echo Creando .env
-			cp ".env.example" .env
-			echo Ejecutando función uno
-			gtoauth_uno
-		fi
+		echo Creando .env
+		cp -f ".env.example" .env
+		echo Ejecutando función uno
+		gtoauth_uno
 		echo Cambiando a directorio raíz
 		cd ..
 		echo Ejecutando función dos
@@ -166,12 +217,10 @@ if [ -f "$FILE" ]; then
 		echo "------------------------------------------------------"
 		echo Cambiando a directorio gtareas-api
 		cd gtareas-api
-		if [ ! -f .env ]; then
-			echo Creando .env
-			cp ".env.example" .env
-			echo Ejecutando funciones
-			gtapi_uno
-		fi
+		echo Creando .env
+		cp -f ".env.example" .env
+		echo Ejecutando funciones
+		gtapi_uno
 		echo Cambiando a directorio raíz
 		cd ..
 	else
@@ -179,19 +228,17 @@ if [ -f "$FILE" ]; then
 	fi
 
 	if ping -c 1 -t 100 192.168.66.7; then
-		if [ ! -f .env ]; then
-			echo "------------------------------------------------------"
-			echo "            CONFIGURANDO GTAREAS-FRONTEND             "
-			echo "------------------------------------------------------"
-			echo Cambiando a directorio gtareas-frontend
-			cd gtareas-frontend
-			echo Creando .env
-			cp ".env.example" .env
-			echo Ejecutando funciones
-			gtfrontend_uno
-			echo Cambiando a directorio raíz
-			cd ..
-		fi
+		echo "------------------------------------------------------"
+		echo "            CONFIGURANDO GTAREAS-FRONTEND             "
+		echo "------------------------------------------------------"
+		echo Cambiando a directorio gtareas-frontend
+		cd gtareas-frontend
+		echo Creando .env
+		cp -f ".env.example" .env
+		echo Ejecutando funciones
+		gtfrontend_uno
+		echo Cambiando a directorio raíz
+		cd ..
 	else
 		echo ¡¡¡GTAREAS-FRONTEND NO SE ENCUENTRA ACTIVA!!!
 	fi
@@ -203,7 +250,9 @@ echo " Para probar Gestor de Tareas, en tu PC ingresa a la  "
 echo " dirección: $(hostname -I | cut -d' ' -f1):8000       "
 echo "------------------------------------------------------"
 echo "------------------------------------------------------"
+echo "------------------------------------------------------"
 echo "          GRACIAS POR USAR GESTOR DE TAREAS           "
+echo "------------------------------------------------------"
 echo "------------------------------------------------------"
 ```
 
@@ -288,8 +337,8 @@ services:
       - MAIL_FROM_ADDRESS="no-reply@gtareas.com"
       - REDIS_HOST=gtredis
       # Se debe cambiar los párametros de esta variable por la IP y Puerto del servidor al cual ingresarán los Clientes a la Web de Gestor de Tareas.
-      - SERVER_RESTABLECER_PASSWORD=http://192.168.0.2:8000
-      # - SERVER-RESTABLECER_PASSWORD=http://localhost:8000
+      # - SERVER_RESTABLECER_PASSWORD=http://192.168.0.2:8000
+      - SERVER-RESTABLECER_PASSWORD=http://localhost:8000
       - SESSION_LIFETIME=60
     volumes:
       - './gtareas-oauth:/app'
