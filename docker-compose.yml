@@ -2,12 +2,13 @@ version: '3'
 
 services:
   gtdb:
-    image: marftoru/mysql:8.1.0-max
+    image: marftoru/mysql:8.1.0
     container_name : gtdb
     command:
       --default-authentication-plugin=mysql_native_password
       --character-set-server=utf8mb4
       --collation-server=utf8mb4_unicode_ci
+      --max_connections=1000
     ports:
       - '3306:3306'
     restart: unless-stopped
@@ -75,8 +76,8 @@ services:
       - MAIL_FROM_ADDRESS="no-reply@gtareas.com"
       - REDIS_HOST=gtredis
       # Se debe cambiar los párametros de esta variable por la IP y Puerto del servidor al cual ingresarán los Clientes a la Web de Gestor de Tareas.
-      - SERVER_RESTABLECER_PASSWORD=http://192.168.0.2:8000
-      # - SERVER-RESTABLECER_PASSWORD=http://localhost:8000
+      # - SERVER_RESTABLECER_PASSWORD=http://192.168.0.2:8000
+      - SERVER-RESTABLECER_PASSWORD=http://localhost:8000
       - SESSION_LIFETIME=60
     volumes:
       - './gtareas-oauth:/app'
