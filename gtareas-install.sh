@@ -209,6 +209,13 @@ echo " Para probar Gestor de Tareas, en tu PC ingresa a la  "
 echo " dirección: $(hostname -I | cut -d' ' -f1):8000       "
 echo "------------------------------------------------------"
 echo "------------------------------------------------------"
+echo
+echo "                  USUARIO DE PRUEBA                   "
+echo 
+echo "           Email: juan.perez@gtareas.com              "
+echo "           Pass:  123456                              "
+echo
+echo "------------------------------------------------------"
 echo "------------------------------------------------------"
 echo "          GRACIAS POR USAR GESTOR DE TAREAS           "
 echo "------------------------------------------------------"
